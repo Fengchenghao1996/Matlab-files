@@ -1,0 +1,36 @@
+%This program plots the bifurcation diagram when f=4Hz
+%load data
+clear all
+load force.mat
+global alpha;
+global F;
+alpha=alpha0;
+F=F0;
+tspan=[0:0.01:800];
+
+%d: the magnitude of driving force 
+global d;
+N=100;
+
+%h:show the execution of the process
+h = waitbar(0,'Please wait...');
+
+%f=4Hz, every 0.25s record the phase of the pendulum
+%graduately increase d
+for j=1:240
+d=j*0.05;
+          i=25;  
+          [tt,xx]=ode45(@DxDtpre2,tspan,[pi/2/30*i,0]);
+            l=length(tt);
+          for k=l-10000:25:l
+                  plot(d*11,abs(xx(k,1)),'.','linewidth',2);
+                  hold on;
+          end    
+          waitbar(j/300,h)
+              xlabel('U/V');
+          ylabel('\theta /rad');
+          set(get(gca,'XLabel'),'FontSize',20);%图上文字为8 point或小5号
+          set(get(gca,'YLabel'),'FontSize',20); 
+          set(gca,'fontsize',20);
+end
+saveas(gcf,'biffuraction.jpg');
