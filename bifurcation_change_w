@@ -1,0 +1,30 @@
+%This program plot the bifurcation diagram as driving angular frequency w changes
+%load data
+tspan=[0:0.01:500];
+global f1;
+dw=0.02;
+N=20;
+h = waitbar(0,'Please wait...');
+
+%record amplitude of each frequency and draw bifurcaton figure 
+for j=1:600
+       %starting frequency:2.43Hz
+       f1=j*dw+2.43;
+          i=24;
+          [tt,xx]=ode45(@DxDt_w,tspan,[pi/2/30*i,0]);
+          l=length(tt);
+          x1=xx(l-10000:l,1);
+          
+          %Use getmax function to get the all maxima of the stable trajectories
+          [Xmax]=getmax(x1);
+          plot(f1,Xmax,'.','markersize',5);
+           
+          xlabel('f/Hz');
+          ylabel('\theta /rad');
+          set(get(gca,'XLabel'),'FontSize',18);
+          set(get(gca,'YLabel'),'FontSize',18); 
+          set(gca,'fontsize',18);
+          waitbar(j/600,h)
+end
+         saveas(gcf,'biffuractionw10.jpg');
+         exit
