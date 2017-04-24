@@ -1,0 +1,40 @@
+%This program records the evolution of phase diagrams as driving voltage changes
+%load data
+clc
+clear all
+load force.mat
+global alpha;
+global F;
+alpha=alpha0;
+F=F0;
+tspan=[0:0.001:600];
+
+%d is the variable to control the magnitude of driving force
+global d;
+N=20;
+writerObj = VideoWriter('Phase_change_U.avi');
+writerObj.FrameRate = 2;
+open(writerObj);      
+h = waitbar(0,'Please wait...');
+for j=1:N
+      d=j/20;
+          for i=1:20
+            [tt,xx]=ode45(@DxDtpre,tspan,[pi/2/20*i,0]);
+            l=length(tt);
+            
+            %plot the stable trajectory of the pendulum and present it as a cartoon
+            plot(xx(l-30000:l,1),xx(l-30000:l,2),'b','LineWidth',2);axis([-0.5,0.5,-3,3]);
+            set(gcf,'Position',[100 100 1280 720]);
+            xlabel('\theta');
+            ylabel('\omega');
+            %when d=1, driving voltage U=11V
+            U=d*11;
+            title(U,'position',[0,0],'FontSize',26);
+            hold on
+            waitbar(j/N,h)
+          end
+          frame = getframe;
+          writeVideo(writerObj,frame);
+          hold off;
+          end
+         close(writerObj);
